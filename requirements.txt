@@ -3,3 +3,4 @@ gunicorn==19.6.0
 oauth2client
 httplib2
 google-api-python-client
+gspread
