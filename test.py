@@ -34,24 +34,14 @@ def processRequest(req):
     #Obtain info from the query in Dialogflow
     result = req.get("queryResult")
     parameters = result.get("parameters")
+    folder_name = parameters.get("FolderType")
     
-    fileName = parameters.get("FolderType")
-    
-    #verify credentials to use google drive API
-    store = file.Storage('token.json')
-    creds = store.get()
-    if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-        creds = tools.run_flow(flow, store)
-    service = build('drive', 'v3', http=creds.authorize(Http()))
+    #verify credentials to use google drive API & get Google API client (or something like that)
+    service = authentication()
 
     #check for file in drive
-    fileName == ""
-    if fileName == "hello.wav"
-        file_id = '1O9mlQFlJ5dTRZvc9SFwj2FBn3KCyN32k'
-    elif fileName == "test.wav" 
-        file_id = '1MN_YUtKJ_kNA7Q8L0uAiZsnGR_ywJei2'
-    else
+    (file_name , file_id) = get_wav_file(folder_name)
+    if not file_name    #If None, this will be false -> then flipped to true
         return {
             "fulfillmentText": "No such file in drive"
         }
@@ -64,8 +54,6 @@ def processRequest(req):
     done = False
     while done is False:
         status, done = downloader.next_chunk()
-        #print ("Download %d%%." % int(status.progress() * 100))
-    #print(fh.getbuffer().nbytes)
     
     #parse buffered stream into Vokaturi (TO-DO: FIX BYTE CONVERSION)
     buffer_length = fh.getbuffer().nbytes
@@ -78,7 +66,7 @@ def processRequest(req):
     voice.extract(quality, emotionProbabilities)
     
     #Output data from Vokaturi
-    output = "The results of the analysis of " + fileName + " is... "
+    output = "The results of the analysis of " + file_name + " is... "
     
     if quality.valid:
         output += 'Neutral: %.5f, ' % emotionProbabilities.neutrality
@@ -92,3 +80,58 @@ def processRequest(req):
     return {
         "fulfillmentText": output
     }
+
+def authentication():
+    store = file.Storage('token.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+        creds = tools.run_flow(flow, store)
+    service = build('drive', 'v3', http=creds.authorize(Http()))
+    return service
+    
+def get_wav_file(folder_name):
+    #Get the list of folders available
+    folder_list = [[],[]]
+    page_token = None
+    while True:
+        response = service.files().list(q="mimeType='application/vnd.google-apps.folder'",
+                           spaces='drive', fields="nextPageToken, files(id, name)",
+                           pageToken=page_token).execute()
+        for item in response.get('files', []):
+            folder_list[0].insert(len(folder_list[0]),item.get('name'))
+            folder_list[1].insert(len(folder_list[1]),item.get('id'))
+        page_token = response.get('nextPageToken', None)
+        if page_token is None:
+            break
+    
+    #Search for the folder and get its ID
+    
+    folder_id = ""
+    if folder_name in folder_list[0]:
+        index = folder_list[0].index(folder_name)
+        folder_id = folder_list[1][index]
+    
+    #Get the list of files in the folder available & add it if it's a WAV file
+    file_list = [[],[]]
+    page_token = None
+    while True:
+        response = service.files().list(
+                q="'" + folder_id + "' in parents",
+                spaces='drive', fields="nextPageToken, files(id, name)", pageToken=page_token).execute()
+        for item in response.get('files', []):
+            if ".wav" in item.get('name'):
+                file_list[0].insert(len(folder_list[0]),item.get('name'))
+                file_list[1].insert(len(folder_list[1]),item.get('id'))
+        page_token = response.get('nextPageToken', None)
+        if page_token is None:
+            print("getting out")
+            break
+    
+    #Select first file to analyse with Vokaturi (TO-DO: Run through all for full analysis)
+    if file_list[0]:    #If list empty, this will be false
+        file_name = file_list[0][0]
+        file_id = file_list[1][0]
+        return [file_name, file_id]
+    else
+        return None
