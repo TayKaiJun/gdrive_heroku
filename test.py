@@ -69,7 +69,7 @@ def processRequest(req):
     voice.extract(quality, emotionProbabilities)
     
     #Output data from Vokaturi
-    output = "The results of the analysis of " + fileName " is... "
+    output = "The results of the analysis of " + fileName + " is... "
     
     if quality.valid:
         output += 'Neutral: %.5f, ' % emotionProbabilities.neutrality
