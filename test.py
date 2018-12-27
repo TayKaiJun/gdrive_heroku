@@ -1,6 +1,3 @@
-import os
-import json
-
 from __future__ import print_function
 from googleapiclient.discovery import build
 from httplib2 import Http
@@ -12,6 +9,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+import os
+import json
 app = Flask(__name__)
 SCOPES = 'https://www.googleapis.com/auth/drive'
 
