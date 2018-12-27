@@ -4,6 +4,7 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 import io
 from apiclient.http import MediaIoBaseDownload
+import Vokaturi
 
 from flask import Flask
 from flask import request
@@ -12,6 +13,8 @@ from flask import make_response
 import os
 import json
 app = Flask(__name__)
+
+Vokaturi.load("lib/open/win/OpenVokaturi-3-0-win64.dll")
 SCOPES = 'https://www.googleapis.com/auth/drive'
 
 @app.route('/')
@@ -23,20 +26,41 @@ def hello():
         creds = tools.run_flow(flow, store)
     service = build('drive', 'v3', http=creds.authorize(Http()))
 
-    # Call the Drive v3 API
-    results = service.files().list(
-        pageSize=10, fields="nextPageToken, files(id, name)").execute()
-    items = results.get('files', [])
-
+    file_id='1O9mlQFlJ5dTRZvc9SFwj2FBn3KCyN32k'
+    request = service.files().get_media(fileId=file_id)
+    
+#    fh = io.FileIO('test.wav','wb')
+#    downloader = MediaIoBaseDownload(fh, request)
+#    done = False
+#    while done is False:
+#        status, done = downloader.next_chunk()
+#        print ("Download %d%%." % int(status.progress() * 100))
+    
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+        print ("Download %d%%." % int(status.progress() * 100))
+    print(fh.getbuffer().nbytes)
+    buffer_length = fh.getbuffer().nbytes
+    c_buffer = Vokaturi.SampleArrayC(buffer_length)
+    c_buffer[:] = fh.getvalue() 
+    voice = Vokaturi.Voice (28000, buffer_length)
+    voice.fill(buffer_length, c_buffer)
+    quality = Vokaturi.Quality()
+    emotionProbabilities = Vokaturi.EmotionProbabilities()
+    voice.extract(quality, emotionProbabilities)
+    
     output = ""
     
-    if not items:
-        output += 'No files found.'
+    if quality.valid:
+        output += emotionProbabilities.neutrality + "<br>"
+        output += emotionProbabilities.happiness + "<br>"
+        output += emotionProbabilities.sadness + "<br>"
+        output += emotionProbabilities.anger + "<br>"
+        output += emotionProbabilities.fear
     else:
-        output += 'Files:'
-        for item in items:
-            output += u'{0} ({1})'.format(item['name'], item['id'])
-            output += '\n'
+        output += "Not enough sonorancy to determine emotions"
     
     return output
-        
