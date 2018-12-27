@@ -108,7 +108,7 @@ def authentication():
     
 def open_gsheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    credentials = ServiceAccountCredentials.from_json_keyfile_name("DSTA-Voice-Analyser-cc819b017195.json", scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name("gsheet_credentials.json", scope)
     gc = gspread.authorize(credentials)
     wks = gc.open("Data").sheet1
     
