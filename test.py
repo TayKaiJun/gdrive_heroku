@@ -6,6 +6,9 @@ import io
 from apiclient.http import MediaIoBaseDownload
 import Vokaturi
 
+import gspread 
+from oauth2client.service_account import ServiceAccountCredentials 
+
 from flask import Flask
 from flask import request
 from flask import make_response
@@ -38,7 +41,10 @@ def processRequest(req):
     
     #verify credentials to use google drive API & get Google API client (or something like that)
     service = authentication()
-
+    
+    #verify credentials to use google sheet API & get Google sheet
+    wks = open_gsheet()
+    
     #check for file in drive
     (file_name , file_id) = get_wav_file(folder_name,service)
     if not file_name:    #If None, this will be false -> then flipped to true
@@ -65,7 +71,9 @@ def processRequest(req):
     emotionProbabilities = Vokaturi.EmotionProbabilities()
     voice.extract(quality, emotionProbabilities)
     
-    #Output data from Vokaturi
+    
+    row = 2
+    #Output data from Vokaturi & save to Google sheet
     output = "The results of the analysis of " + file_name + " is... "
     
     if quality.valid:
@@ -74,8 +82,16 @@ def processRequest(req):
         output += 'Sadness: %.5f, ' % emotionProbabilities.sadness
         output += 'Anger: %.5f, ' % emotionProbabilities.anger
         output += 'Fear: %.5f' % emotionProbabilities.fear
+        wks.update_cell(row, 1, file_name)
+        wks.update_cell(row, 2, '%0.5f' % emotionProbabilities.neutrality)
+        wks.update_cell(row, 3, '%0.5f' % emotionProbabilities.happiness)
+        wks.update_cell(row, 4, '%0.5f' % emotionProbabilities.sadness)
+        wks.update_cell(row, 5, '%0.5f' % emotionProbabilities.anger)
+        wks.update_cell(row, 6, '%0.5f' % emotionProbabilities.fear)
     else:
         output += "Not enough sonorancy to determine emotions"
+    
+    voice.destroy()
     
     return {
         "fulfillmentText": output
@@ -89,6 +105,22 @@ def authentication():
         creds = tools.run_flow(flow, store)
     service = build('drive', 'v3', http=creds.authorize(Http()))
     return service
+    
+def open_gsheet():
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    credentials = ServiceAccountCredentials.from_json_keyfile_name("DSTA-Voice-Analyser-cc819b017195.json", scope)
+    gc = gspread.authorize(credentials)
+    wks = gc.open("Data").sheet1
+    
+    #Set headers for google sheet
+    wks.update_cell(1, 1, "File Name")
+    wks.update_cell(1, 2, "Neutrality")
+    wks.update_cell(1, 3, "Happiness")
+    wks.update_cell(1, 4, "Sadness")
+    wks.update_cell(1, 5, "Anger")
+    wks.update_cell(1, 6, "Fear")
+    return wks
+    
     
 def get_wav_file(folder_name, service):
     #Get the list of folders available
