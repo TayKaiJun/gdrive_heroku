@@ -71,8 +71,6 @@ def processRequest(req):
     emotionProbabilities = Vokaturi.EmotionProbabilities()
     voice.extract(quality, emotionProbabilities)
     
-    
-    row = 2
     #Output data from Vokaturi & save to Google sheet
     output = "The results of the analysis of " + file_name + " is... "
     
