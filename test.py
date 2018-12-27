@@ -55,10 +55,10 @@ def hello():
     output = ""
     
     if quality.valid:
-        output += emotionProbabilities.neutrality + "<br>"
-        output += emotionProbabilities.happiness + "<br>"
-        output += emotionProbabilities.sadness + "<br>"
-        output += emotionProbabilities.anger + "<br>"
+        output += emotionProbabilities.neutrality
+        output += emotionProbabilities.happiness
+        output += emotionProbabilities.sadness
+        output += emotionProbabilities.anger
         output += emotionProbabilities.fear
     else:
         output += "Not enough sonorancy to determine emotions"
