@@ -40,7 +40,7 @@ def processRequest(req):
     service = authentication()
 
     #check for file in drive
-    (file_name , file_id) = get_wav_file(folder_name)
+    (file_name , file_id) = get_wav_file(folder_name,service)
     if not file_name:    #If None, this will be false -> then flipped to true
         return {
             "fulfillmentText": "No such file in drive"
@@ -90,7 +90,7 @@ def authentication():
     service = build('drive', 'v3', http=creds.authorize(Http()))
     return service
     
-def get_wav_file(folder_name):
+def get_wav_file(folder_name, service):
     #Get the list of folders available
     folder_list = [[],[]]
     page_token = None
