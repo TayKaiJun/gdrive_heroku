@@ -133,5 +133,5 @@ def get_wav_file(folder_name):
         file_name = file_list[0][0]
         file_id = file_list[1][0]
         return [file_name, file_id]
-    else
+    else:
         return None
