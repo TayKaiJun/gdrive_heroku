@@ -37,15 +37,6 @@ def hello():
         for item in items:
             output += u'{0} ({1})'.format(item['name'], item['id'])
             output += '\n'
-            
-    file_id='1J2pbOmrZGs0M2JuYkd3fllJZzhnYkmbS'
-    request = service.files().get_media(fileId=file_id)
-    fh = io.FileIO('test.wav','wb')
-    downloader = MediaIoBaseDownload(fh, request)
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-        output+= "Download %d%%." % int(status.progress() * 100)
     
     return output
         
