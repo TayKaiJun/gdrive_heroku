@@ -46,7 +46,7 @@ def hello():
     buffer_length = fh.getbuffer().nbytes
     c_buffer = Vokaturi.SampleArrayC(buffer_length)
     c_buffer[:] = fh.getvalue() 
-    voice = Vokaturi.Voice (28000, buffer_length)
+    voice = Vokaturi.Voice (8000, buffer_length)
     voice.fill(buffer_length, c_buffer)
     quality = Vokaturi.Quality()
     emotionProbabilities = Vokaturi.EmotionProbabilities()
