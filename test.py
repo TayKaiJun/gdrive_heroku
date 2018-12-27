@@ -45,8 +45,17 @@ def processRequest(req):
         creds = tools.run_flow(flow, store)
     service = build('drive', 'v3', http=creds.authorize(Http()))
 
-    #hardcoded a file ID of the 'hello.wav' file on google drive
-    file_id='1O9mlQFlJ5dTRZvc9SFwj2FBn3KCyN32k'
+    #check for file in drive
+    fileName == ""
+    if fileName == "hello.wav"
+        file_id = '1O9mlQFlJ5dTRZvc9SFwj2FBn3KCyN32k'
+    elif fileName == "test.wav" 
+        file_id = '1MN_YUtKJ_kNA7Q8L0uAiZsnGR_ywJei2'
+    else
+        return {
+            "fulfillmentText": "No such file in drive"
+        }
+    
     request = service.files().get_media(fileId=file_id)
     
     #downloads binary data of wav file and stored in a buffered stream
