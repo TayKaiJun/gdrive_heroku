@@ -9,11 +9,11 @@ Keep up the practise of commenting and documenting as much as possible for 2 rea
 * To help yourself keep track of what the code is doing, so that when the project expands and the code gets longer and more complex, you won't be lost and waste a lot of time debugging.
 * Because I have already put in a lot of effort doing it so please help me see it through :')
 
-**For editing this README doc, you can refer to this [website](https://help.github.com/articles/basic-writing-and-formatting-syntax/)**
+*(For help with editing this README doc, you can refer to this [website](https://help.github.com/articles/basic-writing-and-formatting-syntax/))*
 
 Also, do check on some basic functions of git so that you know what you are doing when branching/pulling/pushing/fetching/committing/etc. so that you won't make mistakes accidentally.
 
-Lastly, happy coding! :D
+**Lastly, have fun coding! :D**
 
 ## Direction of Use
 
@@ -31,12 +31,12 @@ Vokaturi.load("lib/open/linux/OpenVokaturi-3-0-linux64.so")
 
 ### Procfile
 
-Not entirely sure how this file is used, but my guess is that it will use the gunicorn library to launch the web app. What is important to note for now is that the "main:app:"
+Not entirely sure how this file is used, but my guess is that it will use the gunicorn library to launch the web app. What is important to note for now is that the `main:app:`
 
 ```
 web: gunicorn main:app --log-file -
 ```
-refers to the following "app" object in the "main.py" file
+refers to the following "app" object in the `main.py` file
 
 ```
 app = Flask(__name__)
@@ -66,9 +66,9 @@ This file contains the main logic used to do everything. Comments have been used
 
 ### .json Files
 
-Currently, these JSON files contains the credentials needed for the Google APIs to work. Becareful to update the names of the files in the "main.py" code should these files be renamed, otherwise there will be errors.
+Currently, these JSON files contains the credentials needed for the Google APIs to work. Becareful to update the names of the files in the `main.py` code should these files be renamed, otherwise there will be errors.
 
-Example:
+**Example:**
 ```
 credentials = ServiceAccountCredentials.from_json_keyfile_name("gsheet_credentials.json", scope)
 ```
