@@ -74,7 +74,8 @@ def processRequest(req):
     #Output data from Vokaturi & save to Google sheet
     output = "The results of the analysis of " + file_name + " is... "
    
-    row += 1
+#code to update row number for each conversation 
+    row = 2
     while wks.cell(row, 1).value != "":
         row +=1
        
