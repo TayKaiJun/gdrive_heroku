@@ -31,23 +31,23 @@ Vokaturi.load("lib/open/linux/OpenVokaturi-3-0-linux64.so")
 
 ### Procfile
 
-Not entirely sure how this file is used, but my guess is that it will use the gunicorn library to launch the web app. What is important to note for now is that the `main:app:`
+Not entirely sure how this file is used, but my guess is that it will use the gunicorn library to launch the web app. What is important to note for now is that the `main:app` in 
 
 ```
 web: gunicorn main:app --log-file -
 ```
-refers to the following "app" object in the `main.py` file
+refers to the following `app` object in the `main.py` file
 
 ```
 app = Flask(__name__)
 ```
 
-So, if the python file name is to be changed or "app" is renamed, be sure to update the Procfile accordingly or there will be error.
+So, if the python file name is to be changed or `app` is renamed, be sure to update the Procfile accordingly or there will be error.
 
 ### requirements.txt
 
 This file will be used by the Heroku engine to identify which libraries are needed to be pip installed. 
-(For example, if we need the "deepaffects" package on our computers, we will use "pip install". But instead, to run it on Heroku, add "deepaffects" to the list in this file instead)
+(For example, if we need the `deepaffects` package on our computers, we usually do `pip install deepaffects`. But instead, to run it on Heroku, add `deepaffects` to the list in this file instead)
 
 ### runtime.txt
 
