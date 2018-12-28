@@ -73,7 +73,11 @@ def processRequest(req):
     
     #Output data from Vokaturi & save to Google sheet
     output = "The results of the analysis of " + file_name + " is... "
-    
+   
+    row += 1
+    while wks.cell(row, 1).value != "":
+        row +=1
+       
     if quality.valid:
         output += 'Neutral: %.5f, ' % emotionProbabilities.neutrality
         output += 'Happiness: %.5f, ' % emotionProbabilities.happiness
