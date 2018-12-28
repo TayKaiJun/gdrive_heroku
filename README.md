@@ -8,7 +8,8 @@ Keep up the practise of commenting and documenting as much as possible for 2 rea
 * For continuity, since other collaborators will now be able to use this code with ease.
 * To help yourself keep track of what the code is doing, so that when the project expands and the code gets longer and more complex, you won't be lost and waste a lot of time debugging.
 * Because I have already put in a lot of effort doing it so please help me see it through :')
-*For editing this README doc, you can refer to this [website](https://help.github.com/articles/basic-writing-and-formatting-syntax/)*
+
+**For editing this README doc, you can refer to this [website](https://help.github.com/articles/basic-writing-and-formatting-syntax/)**
 
 Also, do check on some basic functions of git so that you know what you are doing when branching/pulling/pushing/fetching/committing/etc. so that you won't make mistakes accidentally.
 
