@@ -6,6 +6,8 @@ import io
 from apiclient.http import MediaIoBaseDownload
 import Vokaturi
 
+import datetime 
+
 import gspread 
 from oauth2client.service_account import ServiceAccountCredentials 
 
@@ -133,7 +135,6 @@ def open_gsheet():
     wks.update_cell(1, 6, "Anger")
     wks.update_cell(1, 7, "Fear")
     return wks
-    
     
 def get_wav_file(folder_name, service):
     #Get the list of folders available
